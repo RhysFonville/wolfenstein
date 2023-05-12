@@ -1,0 +1,3 @@
+﻿  main.cpp
+C:\Users\Family\source\repos\wolfenstein\wolfenstein\main.cpp(98,16): warning C4244: 'initializing': conversion from 'float' to 'int', possible loss of data
+  wolfenstein.vcxproj -> C:\Users\Family\source\repos\wolfenstein\x64\Debug\wolfenstein.exe
