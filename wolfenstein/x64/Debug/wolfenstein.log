@@ -1,4 +1,5 @@
 ﻿  main.cpp
-C:\Users\Family\source\repos\wolfenstein\wolfenstein\main.cpp(99,16): warning C4244: 'initializing': conversion from 'float' to 'int', possible loss of data
-C:\Users\Family\source\repos\wolfenstein\wolfenstein\main.cpp(103,4): warning C4267: 'initializing': conversion from 'size_t' to 'int', possible loss of data
+C:\Users\Family\source\repos\wolfenstein\wolfenstein\main.cpp(101,16): warning C4244: 'initializing': conversion from 'float' to 'int', possible loss of data
+C:\Users\Family\source\repos\wolfenstein\wolfenstein\main.cpp(105,4): warning C4267: 'initializing': conversion from 'size_t' to 'int', possible loss of data
+C:\Users\Family\source\repos\wolfenstein\wolfenstein\main.cpp(126,37): warning C4244: 'argument': conversion from 'float' to 'const unsigned __int64', possible loss of data
   wolfenstein.vcxproj -> C:\Users\Family\source\repos\wolfenstein\x64\Debug\wolfenstein.exe

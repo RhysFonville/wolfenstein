@@ -3,14 +3,16 @@
 #include <string>
 #include <numbers>
 #include <chrono>
+#include <stdio.h>
 
 #define SCREEN_AREA (screen_width * screen_height)
 
 #define WALL '#'
 
-const std::string char_gradient = " .\'`^\",:;Il!i><~+_-?][}{1)(|\\/tfjrxnuvczXYUJCLQ0OZmwqpdbkhao*#MW&8%B@$";
+const std::string wall_gradient = " J7(|Fi{C}fI31tlu[neoZ5Yxjya]2ESwqkP6h9d4VpOGbUAKXHm8RD#$Bg0MNWQ%&@";
+const std::string floor_gradient = " _.,-'`:";
 
-constexpr int screen_width = 120;
+constexpr int screen_width = 140;
 constexpr int screen_height = 40;
 
 float playerX = 8.0f;
@@ -22,7 +24,7 @@ constexpr int map_height = 16;
 
 std::string map;
 
-float fov = (float)(std::numbers::pi / 8.0f);
+float fov = (float)(std::numbers::pi / 4.0f);
 float max_view_depth = 16.0f;
 
 int main() {
@@ -63,7 +65,7 @@ int main() {
 			playerY += cosf(playerA) * 5.0f * dt;
 		}
 		if (GetAsyncKeyState((USHORT)'A') & 0x8000) {
-			playerA -= 0.5f * dt;
+			playerA -= 0.8f * dt;
 		}
 		if (GetAsyncKeyState((USHORT)'S') & 0x8000) {
 			playerX -= sinf(playerA) * 5.0f * dt;
@@ -71,7 +73,7 @@ int main() {
 		}
 		
 		if (GetAsyncKeyState((USHORT)'D') & 0x8000) {
-			playerA += 0.5f * dt;
+			playerA += 0.8f * dt;
 		}
 
 		for (int x = 0; x < screen_width; x++) {
@@ -99,23 +101,47 @@ int main() {
 			int ceiling = (float)(screen_height / 2.0f) - screen_height / distance_to_wall;
 			int floor = screen_height - ceiling;
 
-			char shade_char = char_gradient[0];
-			for (int i = char_gradient.size()-1; i >= 1; i--) {
+			char shade_char = wall_gradient[0];
+			for (int i = wall_gradient.size()-1; i >= 1; i--) {
 				if (distance_to_wall < max_view_depth / (float)i) {
-					shade_char = char_gradient[i];
+					shade_char = wall_gradient[i];
 					break;
 				}
 			}
 
 			for (int y = 0; y < screen_height; y++) {
-				if (y <= ceiling)
+				if (y <= ceiling) {
 					screen[y * screen_width + x] = ' ';
-				else if (y > ceiling && y <= floor)
+				} else if (y > ceiling && y <= floor) {
 					screen[y * screen_width + x] = shade_char;
-				else
-					screen[y * screen_width + x] = '.';
+				} else {
+					// Shade floor based on distance
+					float b = 1.0f - (((float)y -screen_height/2.0f) / ((float)screen_height / 2.0f)); // b increases, visibility decreases
+
+					float frac_sum = 1;
+					for (float i = 1; i <= floor_gradient.size(); i++) {
+						frac_sum = i / (floor_gradient.size());
+
+						if (b < frac_sum) {
+							shade_char = floor_gradient[i-1];
+							break;
+						}
+					}
+
+					screen[y * screen_width + x] = shade_char;
+				}
 			}
 		}
+
+		//sprintf_s(&screen[0], screen.size()*sizeof(char), "X=%3.2f, Y=%3.2f, A=%3.2f FPS=%3.2f ", playerX, playerY, playerA, 1.0f/dt);
+
+		// Display Map
+		for (int nx = 0; nx < map_width; nx++) {
+			for (int ny = 0; ny < map_width; ny++) {
+				screen[(ny+1)*screen_width + nx] = map[ny * map_width + nx];
+			}
+		}
+		screen[((int)playerX+1) * screen_width + (int)playerY] = 'P';
 
 		screen[screen_width * screen_height - 1] = '\0';
 		WriteConsoleOutputCharacterA(console, screen.c_str(), screen_width * screen_height, { 0, 0 }, &chars_written);
